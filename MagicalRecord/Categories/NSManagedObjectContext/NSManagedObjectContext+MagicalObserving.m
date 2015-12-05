@@ -87,22 +87,12 @@ NSString * const kMagicalRecordDidMergeChangesFromiCloudNotification = @"kMagica
 
 - (void) MR_observeiCloudChangesInCoordinator:(NSPersistentStoreCoordinator *)coordinator;
 {
-    if (![MagicalRecord isICloudEnabled]) return;
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self
-                           selector:@selector(MR_mergeChangesFromiCloud:)
-                               name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                             object:coordinator];
     
 }
 
 - (void) MR_stopObservingiCloudChangesInCoordinator:(NSPersistentStoreCoordinator *)coordinator;
 {
-    if (![MagicalRecord isICloudEnabled]) return;
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self
-                                  name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                object:coordinator];
+
 }
 
 @end

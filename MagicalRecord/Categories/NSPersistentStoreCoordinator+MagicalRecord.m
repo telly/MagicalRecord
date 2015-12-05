@@ -155,42 +155,27 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
         [MagicalRecord setICloudEnabled:cloudURL != nil];
         
         NSDictionary *options = [[self class] MR_autoMigrationOptions];
-        if (cloudURL)   //iCloud is available
+        if (false)   //iCloud is available
         {
-            NSMutableDictionary *iCloudOptions = [[NSMutableDictionary alloc] init];
-            [iCloudOptions setObject:cloudURL forKey:NSPersistentStoreUbiquitousContentURLKey];
-
-            if ([contentNameKey length] > 0)
-            {
-                [iCloudOptions setObject:contentNameKey forKey:NSPersistentStoreUbiquitousContentNameKey];
-            }
-
-            options = [options MR_dictionaryByMergingDictionary:iCloudOptions];
+//            NSMutableDictionary *iCloudOptions = [[NSMutableDictionary alloc] init];
+//            [iCloudOptions setObject:cloudURL forKey:NSPersistentStoreUbiquitousContentURLKey];
+//
+//            if ([contentNameKey length] > 0)
+//            {
+//                [iCloudOptions setObject:contentNameKey forKey:NSPersistentStoreUbiquitousContentNameKey];
+//            }
+//
+//            options = [options MR_dictionaryByMergingDictionary:iCloudOptions];
         }
         else
         {
             MRLogWarn(@"iCloud is not enabled");
         }
 
-
-        if ([self respondsToSelector:@selector(performBlockAndWait:)])
-        {
-            [self performSelector:@selector(performBlockAndWait:) withObject:^{
-                [self MR_addSqliteStoreNamed:storeIdentifier withOptions:options];
-            }];
-        }
-        else
-        {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [self lock];
-#pragma clang diagnostic pop
+        [self performSelector:@selector(performBlockAndWait:) withObject:^{
             [self MR_addSqliteStoreNamed:storeIdentifier withOptions:options];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [self unlock];
-#pragma clang diagnostic pop
-        }
+        }];
+    
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([NSPersistentStore MR_defaultPersistentStore] == nil)
